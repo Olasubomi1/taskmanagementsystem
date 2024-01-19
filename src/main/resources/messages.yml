@@ -6,4 +6,5 @@ E02: User record not found.
 E03A: User record already exists by email.
 E03B: User record already exists by username.
 E03C: User record already exists by mobileNumber.
+E04: Task not found.
 E99: System Error.
