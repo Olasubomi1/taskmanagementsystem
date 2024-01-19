@@ -8,5 +8,6 @@ import com.soft.TaskManagementSystem.modules.task.payload.request.UpdateTaskRequ
 public interface TaskService {
     ServerResponse createTask(CreateTaskRequestPayload requestPayload);
     ServerResponse updateTask(UpdateTaskRequestPayload requestPayload);
+    ServerResponse getTask(String id);
     ServerResponse deleteTask(DeleteTaskRequestPayload requestPayload);
 }

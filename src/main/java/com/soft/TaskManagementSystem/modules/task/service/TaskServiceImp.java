@@ -11,6 +11,7 @@ import com.soft.TaskManagementSystem.modules.task.payload.request.DeleteTaskRequ
 import com.soft.TaskManagementSystem.modules.task.payload.request.UpdateTaskRequestPayload;
 import com.soft.TaskManagementSystem.modules.task.payload.response.CreateTaskResponsePayload;
 import com.soft.TaskManagementSystem.modules.task.payload.response.DeleteTaskResponseStatus;
+import com.soft.TaskManagementSystem.modules.task.payload.response.GetTaskResponsePayload;
 import com.soft.TaskManagementSystem.modules.task.payload.response.UpdateTaskResponsePayload;
 import com.soft.TaskManagementSystem.modules.task.repository.TaskRepository;
 import com.soft.TaskManagementSystem.modules.user.model.User;
@@ -125,6 +126,41 @@ public class TaskServiceImp implements TaskService{
         response.setResponseMessage(responseMessage);
         response.setResponseData(responsePayload);
         return response;
+    }
+
+    @Override
+    public ServerResponse getTask(String id) {
+        String responseCode = ResponseCode.SYSTEM_ERROR;
+        String responseMessage = messageProvider.getMessage(responseCode);
+        ErrorResponse errorResponse = ErrorResponse.getInstance();
+
+        Task task = taskRepository.findByTaskId(id);
+        if (task == null){
+            responseCode = ResponseCode.TASK_NOT_FOUND;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        GetTaskResponsePayload responsePayload = new GetTaskResponsePayload();
+        responsePayload.setUserId(task.getUserId());
+        responsePayload.setTaskId(task.getTaskId());
+        responsePayload.setTaskTitle(task.getTaskTitle());
+        responsePayload.setTaskContent(task.getTaskContent());
+        responsePayload.setTaskPriority(task.getTaskPriority());
+        responsePayload.setTaskStatus(task.getTaskStatus());
+        responsePayload.setCreatedAt(task.getCreatedAt());
+        responsePayload.setUpdatedAt(task.getUpdatedAt());
+
+        responseCode = ResponseCode.SUCCESS;
+        responseMessage = messageProvider.getMessage(responseCode);
+        PayloadResponse response = PayloadResponse.getInstance();
+        response.setResponseCode(responseCode);
+        response.setResponseMessage(responseMessage);
+        response.setResponseData(responsePayload);
+
+        return  response;
     }
 
     @Override

@@ -33,10 +33,16 @@ public class TaskController {
         return ResponseEntity.ok(serverResponse);
     }
 
-    @DeleteMapping(value = "deleteTask", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/deleteTask", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ServerResponse> deleteTask(@RequestBody DeleteTaskRequestPayload requestPayload){
         // TODO: Validation of the request body.
         ServerResponse serverResponse = taskService.deleteTask(requestPayload);
+        return ResponseEntity.ok(serverResponse);
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public  ResponseEntity<ServerResponse> getTask(@PathVariable String id){
+        ServerResponse serverResponse = taskService.getTask(id);
         return ResponseEntity.ok(serverResponse);
     }
 }
