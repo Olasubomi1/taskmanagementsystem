@@ -7,8 +7,10 @@ import com.soft.TaskManagementSystem.dto.PayloadResponse;
 import com.soft.TaskManagementSystem.dto.ServerResponse;
 import com.soft.TaskManagementSystem.modules.task.model.Task;
 import com.soft.TaskManagementSystem.modules.task.payload.request.CreateTaskRequestPayload;
+import com.soft.TaskManagementSystem.modules.task.payload.request.DeleteTaskRequestPayload;
 import com.soft.TaskManagementSystem.modules.task.payload.request.UpdateTaskRequestPayload;
 import com.soft.TaskManagementSystem.modules.task.payload.response.CreateTaskResponsePayload;
+import com.soft.TaskManagementSystem.modules.task.payload.response.DeleteTaskResponseStatus;
 import com.soft.TaskManagementSystem.modules.task.payload.response.UpdateTaskResponsePayload;
 import com.soft.TaskManagementSystem.modules.task.repository.TaskRepository;
 import com.soft.TaskManagementSystem.modules.user.model.User;
@@ -123,5 +125,47 @@ public class TaskServiceImp implements TaskService{
         response.setResponseMessage(responseMessage);
         response.setResponseData(responsePayload);
         return response;
+    }
+
+    @Override
+    public ServerResponse deleteTask(DeleteTaskRequestPayload requestPayload) {
+        String responseCode = ResponseCode.SYSTEM_ERROR;
+        String responseMessage = messageProvider.getMessage(responseCode);
+        ErrorResponse errorResponse = ErrorResponse.getInstance();
+
+        // Check if user exist by userId
+        User userByUserId = userRepository.findByUserId(requestPayload.getUserId());
+        if (userByUserId == null){
+            responseCode = ResponseCode.RECORD_NOT_FOUND;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        //Check if task exist with userId
+        Task task = taskRepository.findByTaskId(requestPayload.getTaskId());
+        if (task == null){
+            responseCode = ResponseCode.TASK_NOT_FOUND;
+            responseMessage = messageProvider.getMessage(responseCode);
+            errorResponse.setResponseCode(responseCode);
+            errorResponse.setResponseMessage(responseMessage);
+            return errorResponse;
+        }
+
+        taskRepository.deleteById(task.getId());
+
+        DeleteTaskResponseStatus responsePayload = new DeleteTaskResponseStatus();
+        responsePayload.setStatus("Task deleted");
+        responsePayload.setTimeDeleted(LocalDateTime.now());
+
+        responseCode = ResponseCode.SUCCESS;
+        responseMessage = messageProvider.getMessage(responseCode);
+        PayloadResponse response = PayloadResponse.getInstance();
+        response.setResponseCode(responseCode);
+        response.setResponseMessage(responseMessage);
+        response.setResponseData(responsePayload);
+
+        return  response;
     }
 }
