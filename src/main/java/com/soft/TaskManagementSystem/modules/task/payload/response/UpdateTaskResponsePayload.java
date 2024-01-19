@@ -9,5 +9,7 @@ public class UpdateTaskResponsePayload {
     private String taskId;
     private String userId;
     private String taskContent;
+    private String taskPriority;
+    private String taskStatus;
     private LocalDateTime updatedAt;
 }

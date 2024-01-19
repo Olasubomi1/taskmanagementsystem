@@ -92,7 +92,7 @@ public class TaskServiceImp implements TaskService{
         }
 
         //Check if task exist with userId
-        Task task = taskRepository.findByUserId(userByUserId.getUserId());
+        Task task = taskRepository.findByTaskId(requestPayload.getTaskId());
         if (task == null){
             responseCode = ResponseCode.TASK_NOT_FOUND;
             responseMessage = messageProvider.getMessage(responseCode);
@@ -103,6 +103,8 @@ public class TaskServiceImp implements TaskService{
 
         // Update task properties
         task.setTaskContent(requestPayload.getTaskContent());
+        task.setTaskPriority(requestPayload.getTaskPriority().toUpperCase());
+        task.setTaskStatus(requestPayload.getTaskStatus().toUpperCase());
         task.setUpdatedAt(LocalDateTime.now());
         taskRepository.saveAndFlush(task);
 
@@ -110,6 +112,8 @@ public class TaskServiceImp implements TaskService{
         responsePayload.setUserId(task.getUserId());
         responsePayload.setTaskId(task.getTaskId());
         responsePayload.setTaskContent(task.getTaskContent());
+        responsePayload.setTaskPriority(task.getTaskPriority());
+        responsePayload.setTaskStatus(task.getTaskStatus());
         responsePayload.setUpdatedAt(task.getUpdatedAt());
 
         responseCode = ResponseCode.SUCCESS;
