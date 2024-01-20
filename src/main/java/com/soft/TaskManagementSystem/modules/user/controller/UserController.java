@@ -21,7 +21,6 @@ public class UserController {
 
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ServerResponse> signupUser(@RequestBody SignupUserRequestPayload requestPayload){
-        // TODO: Validation of the request body.
         ServerResponse serverResponse = userService.signupUser(requestPayload);
         return ResponseEntity.ok(serverResponse);
     }

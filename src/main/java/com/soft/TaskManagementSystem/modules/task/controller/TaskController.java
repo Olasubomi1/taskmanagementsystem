@@ -22,21 +22,18 @@ public class TaskController {
 
     @PostMapping(value = "/createTask", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ServerResponse> createTask(@RequestBody CreateTaskRequestPayload requestPayload){
-        // TODO: Validation of the request body.
         ServerResponse serverResponse = taskService.createTask(requestPayload);
         return ResponseEntity.ok(serverResponse);
     }
 
     @PutMapping(value = "/updateTask", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ServerResponse> updateTask(@RequestBody UpdateTaskRequestPayload requestPayload){
-        // TODO: Validation of the request body.
         ServerResponse serverResponse = taskService.updateTask(requestPayload);
         return ResponseEntity.ok(serverResponse);
     }
 
     @DeleteMapping(value = "/deleteTask", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ServerResponse> deleteTask(@RequestBody DeleteTaskRequestPayload requestPayload){
-        // TODO: Validation of the request body.
         ServerResponse serverResponse = taskService.deleteTask(requestPayload);
         return ResponseEntity.ok(serverResponse);
     }
