@@ -3,6 +3,7 @@ package com.soft.TaskManagementSystem.modules.task.controller;
 import com.soft.TaskManagementSystem.dto.ServerResponse;
 import com.soft.TaskManagementSystem.modules.task.payload.request.CreateTaskRequestPayload;
 import com.soft.TaskManagementSystem.modules.task.payload.request.DeleteTaskRequestPayload;
+import com.soft.TaskManagementSystem.modules.task.payload.request.GetTaskPaginationRequestPayload;
 import com.soft.TaskManagementSystem.modules.task.payload.request.UpdateTaskRequestPayload;
 import com.soft.TaskManagementSystem.modules.task.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,12 @@ public class TaskController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public  ResponseEntity<ServerResponse> getTask(@PathVariable String id){
         ServerResponse serverResponse = taskService.getTask(id);
+        return ResponseEntity.ok(serverResponse);
+    }
+
+    @GetMapping(value = "/{pageNumber}/{pageSize}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ServerResponse> getPaginatedTasks(@RequestBody GetTaskPaginationRequestPayload requestPayload, @PathVariable Integer pageNumber, @PathVariable Integer pageSize){
+        ServerResponse serverResponse = taskService.getTaskPagination(requestPayload, pageNumber, pageSize);
         return ResponseEntity.ok(serverResponse);
     }
 }

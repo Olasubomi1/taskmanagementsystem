@@ -8,18 +8,27 @@ import com.soft.TaskManagementSystem.dto.ServerResponse;
 import com.soft.TaskManagementSystem.modules.task.model.Task;
 import com.soft.TaskManagementSystem.modules.task.payload.request.CreateTaskRequestPayload;
 import com.soft.TaskManagementSystem.modules.task.payload.request.DeleteTaskRequestPayload;
+import com.soft.TaskManagementSystem.modules.task.payload.request.GetTaskPaginationRequestPayload;
 import com.soft.TaskManagementSystem.modules.task.payload.request.UpdateTaskRequestPayload;
-import com.soft.TaskManagementSystem.modules.task.payload.response.CreateTaskResponsePayload;
-import com.soft.TaskManagementSystem.modules.task.payload.response.DeleteTaskResponseStatus;
-import com.soft.TaskManagementSystem.modules.task.payload.response.GetTaskResponsePayload;
-import com.soft.TaskManagementSystem.modules.task.payload.response.UpdateTaskResponsePayload;
+import com.soft.TaskManagementSystem.modules.task.payload.response.*;
 import com.soft.TaskManagementSystem.modules.task.repository.TaskRepository;
 import com.soft.TaskManagementSystem.modules.user.model.User;
 import com.soft.TaskManagementSystem.modules.user.repository.UserRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -161,6 +170,33 @@ public class TaskServiceImp implements TaskService{
         response.setResponseData(responsePayload);
 
         return  response;
+    }
+
+    @Override
+    public ServerResponse getTaskPagination(GetTaskPaginationRequestPayload requestPayload, Integer pageNumber, Integer pageSize) {
+        String responseCode = ResponseCode.SYSTEM_ERROR;
+        String responseMessage = messageProvider.getMessage(responseCode);
+        ErrorResponse errorResponse = ErrorResponse.getInstance();
+
+        Specification specification = new Specification() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.equal(root.get("userId"), requestPayload.getUserId());
+            }
+        };
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Task> task = taskRepository.findAll(specification, pageable);
+
+        GetTaskPaginationResponsePayload responsePayload = new GetTaskPaginationResponsePayload();
+        responsePayload.setTasks(task);
+
+        responseCode = ResponseCode.SUCCESS;
+        responseMessage = messageProvider.getMessage(responseCode);
+        PayloadResponse response = PayloadResponse.getInstance();
+        response.setResponseCode(responseCode);
+        response.setResponseMessage(responseMessage);
+        response.setResponseData(responsePayload);
+        return response;
     }
 
     @Override
